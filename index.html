@@ -27,39 +27,6 @@
 		function generateId() {
 			return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
 		}
-		//Library Code
-		/*function createStore (reducer) {
-		
-			  // The store should have four parts
-		  	  // 1. The state
-		      // 2. Get the state.
-		      // 3. Listen to changes on the state.
-		      // 4. Update the state
-			let state
-			let listeners = []
-		
-			const getState = () => state
-		
-			const subscribe = (listener) => {
-				listeners.push(listener)
-				return () => {
-		      		listeners = listeners.filter((l) => l !== listener)
-		    	}
-			}
-		
-			//Responsible for updating the state
-			const dispatch= (action) => {
-				state = reducer(state, action)
-				listeners.forEach((listener) => listener())
-			}
-		
-			return {
-				getState,
-				subscribe,
-				dispatch
-			}
-		}*/
-		
 		
 		//App Code
 		const ADD_TODO = 'ADD_TODO'
@@ -126,14 +93,6 @@
 			}
 		}
 		
-		//This is a root reducer which is pass all the reducer in the createStore() method
-		/*function app (state = {}, action) {
-			return {
-				todos: todos(state.todos, action),
-				goals: goals(state.goals, action),
-			}
-		}*/
-		
 		const store = Redux.createStore(/*app*/Redux.combineReducers({
 			todos,
 			goals,
@@ -150,43 +109,6 @@
 			todos.forEach(addTodoToDOM)
 			goals.forEach(addGoalToDOM)
 		})
-		
-//		store.dispatch (addTodoAction ({
-//			id: 0,
-//			name: 'Learn Redux',
-//			complete: false
-//			
-//		}))
-//		
-//		store.dispatch (addTodoAction({
-//			id: 1,
-//			name: 'Walk the dog',
-//			complete: false
-//		}))
-//		
-//		store.dispatch(addTodoAction({
-//			id: 2,
-//			name: 'Read a book',
-//			complete: false
-//		}))
-//		
-//		store.dispatch(removeTodoAction(1))
-//		
-//		store.dispatch (toggleTodoAction(1))
-//		
-//		
-//		store.dispatch (addGoalAction({
-//			id: 0,
-//			name: 'Get a good job'
-//		}))
-//		
-//		store.dispatch (addGoalAction({
-//			id: 1,
-//			name: 'Build a home'
-//			
-//		}))
-//		
-//		store.dispatch (removeGoalAction(1))
 
 		//DOM Code
 		function addTodo () {
