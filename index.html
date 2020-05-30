@@ -3,6 +3,7 @@
 <html>
 <head>
 	<title>Udacity Todos Goals</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
 </head>
 <body>
 	<div>
@@ -27,7 +28,7 @@
 			return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
 		}
 		//Library Code
-		function createStore (reducer) {
+		/*function createStore (reducer) {
 		
 			  // The store should have four parts
 		  	  // 1. The state
@@ -57,7 +58,7 @@
 				subscribe,
 				dispatch
 			}
-		}
+		}*/
 		
 		
 		//App Code
@@ -126,14 +127,17 @@
 		}
 		
 		//This is a root reducer which is pass all the reducer in the createStore() method
-		function app (state = {}, action) {
+		/*function app (state = {}, action) {
 			return {
 				todos: todos(state.todos, action),
 				goals: goals(state.goals, action),
 			}
-		}
+		}*/
 		
-		const store = createStore(app)
+		const store = Redux.createStore(/*app*/Redux.combineReducers({
+			todos,
+			goals,
+		}))
 		
 		//This function is invoked whenever the state changes
 		store.subscribe(() => {
