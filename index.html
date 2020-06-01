@@ -4,6 +4,9 @@
 <head>
 	<title>Udacity Todos Goals</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
+	<script src="https://unpkg.com/react@16.3.0-alpha.1/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16.3.0-alpha.1/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
 	<div>
@@ -20,6 +23,10 @@
 		<ul id="goals">
 		</ul>		
 	</div>
+
+	<hr/>
+
+	<div id='app'></div>
 	<script type="text/javascript">
 		function generateId() {
 			return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
@@ -90,43 +97,23 @@
 			}
 		}
 
-		//Middleware manual
-		/*function checkAndDispatch (store, action) {
+		//Checker function middleware ES6
+		const checker = (store) => (next) => (action) => {
 			if(
 				action.type === ADD_TODO &&
 				action.todo.name.toLowerCase().includes('bitcoin')
 				) {
-				return alert('Nope, That\'s a bad idea')
-			}
-			if(
-				action.type === ADD_GOAL &&
-				action.goal.name.toLowerCase().includes('bitcoin')
-				) {
-				return alert('Nope, That\'s a bad idea')
-			}
-			return store.dispatch(action)
-		}*/
-
-		function checker (store) {
-			return function (next) {
-				return function (action) {
-					if(
-						action.type === ADD_TODO &&
-						action.todo.name.toLowerCase().includes('bitcoin')
-						) {
-						return alert('Nope, That\'s a bad idea')
-					}
-
-			   		if(
-						action.type === ADD_GOAL &&
-						action.goal.name.toLowerCase().includes('bitcoin')
-					) {
-						return alert('Nope, That\'s a bad idea')
-					}
-
-					return next(action)
+					return alert('Nope, That\'s a bad idea')
 				}
-			}
+
+			   	if(
+					action.type === ADD_GOAL &&
+					action.goal.name.toLowerCase().includes('bitcoin')
+				) {
+					return alert('Nope, That\'s a bad idea')
+				}
+
+				return next(action)
 		}
 
 		const logger = (store) => (next) => (action) => {
@@ -138,10 +125,20 @@
 			return result
 		}
 
+		const goalChecker = (store) => (next) => (action) => {
+			if(action.type === ADD_GOAL) {
+				alert("That's a great goal!!")
+			}
+			if(action.type === ADD_TODO) {
+				alert("Don't forget to "+action.todo.name)
+			}
+			return next(action)
+		}
+
 		const store = Redux.createStore(/*app*/Redux.combineReducers({
 			todos,
 			goals,
-		}),Redux.applyMiddleware(checker, logger))
+		}),Redux.applyMiddleware(checker, logger, goalChecker))
 
 		//This function is invoked whenever the state changes
 		store.subscribe(() => {
@@ -213,6 +210,83 @@
 			document.getElementById('goals')
 				.appendChild(node)
 		}
+	</script>
+
+	<script type="text/babel">
+		function List (props) {
+				return (
+					<ul>
+						<li>LIST</li>
+					</ul>
+				)
+		}
+
+		class Todos extends React.Component {
+			addItem = (e) => {
+					e.preventDefault()
+					const name = this.input.value
+					this.input.value=''
+
+					this.props.store.dispatch(addTodoAction({
+						name,
+						id: generateId(),
+						complete: false,
+					}))	
+			}
+			render () {
+				return (
+					<div>
+						<h1>Todo List</h1>
+						<input type="text" 
+						placeholder="Add Todo"
+						ref = {(input) => this.input = input}/>
+						<button onClick={this.addItem}>Add Todo</button>
+						<List/>
+					</div>
+				)
+			}
+		}
+
+		class Goals extends React.Component {
+			addItem = (e) => {
+					e.preventDefault()
+					const name = this.input.value
+					this.input.value=''
+
+					this.props.store.dispatch(addGoalAction({
+						name,
+						id: generateId(),
+					}))	
+			}
+
+			render () {
+				return (
+					<div>
+						<h1>Goal List</h1>
+						<input type="text" 
+						placeholder="Add Goal"
+						ref = {(input) => this.input = input}/>
+						<button onClick={this.addItem}>Add Goal</button>
+						<List/>
+					</div>
+				)
+			}
+		}
+		class App extends React.Component {
+			render() {
+				return (
+					<div>
+						<Todos store={this.props.store}/>
+						<Goals store={this.props.store}/>
+					</div>
+				)
+			}
+		}
+
+		ReactDOM.render(
+			<App store={store}/>,
+			document.getElementById('app')
+		)
 	</script>
 </body>
 </html>
