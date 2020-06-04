@@ -155,18 +155,19 @@
 			return next(action)
 		}
 
-		const thunk = (store) => (next) => (action) => {
+		//ReduxThunk Manually to pass in as first argument in the middleware
+		/*const thunk = (store) => (next) => (action) => {
 			if(typeof action === 'function') {
 				return action(store.dispatch)
 			}
 			return next(action)
-		}
+		}*/
 
-		const store = Redux.createStore(/*app*/Redux.combineReducers({
+		const store = Redux.createStore(Redux.combineReducers({
 			todos,
 			goals,
 			loading,
-		}),Redux.applyMiddleware(thunk, checker, logger, goalChecker))
+		}),Redux.applyMiddleware(ReduxThunk.default, checker, logger, goalChecker))
 
 	</script>
 
